@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-require("dotenv").config();
 
 import Result from "./Result";
 import Input from "./Inputs";
@@ -13,9 +12,10 @@ function FindItem({ name, label, clicked }) {
     addData(value);
   }
 
-  function addFood(foodinfo) {
+  function addFood(fooditem) {
+    console.log(fooditem);
     axios
-      .post("http://localhost:3001/api/foodinfo", foodinfo)
+      .post("http://localhost:3001/api/foodinfo", fooditem)
       .then((res) => {});
     clicked(false);
   }
@@ -24,7 +24,7 @@ function FindItem({ name, label, clicked }) {
     axios
       .get(`https://api.calorieninjas.com/v1/nutrition?query=${data}`, {
         headers: {
-          "X-Api-Key": process.env.API_KEY,
+          "X-Api-Key": "yCmPXYKHWngw91XJ8uuMwkiMtRFoqtCOl5E5G2ks",
           "Content-type": "application/json; charset=UTF-8",
         },
       })

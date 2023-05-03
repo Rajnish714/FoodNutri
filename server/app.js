@@ -27,6 +27,7 @@ app.post("/api/foodinfo", (req, res) => {
   const selectedFood = req.body;
   FOOD.create(selectedFood).then(() => {
     console.log("aa gaya data");
+    console.log(req.body);
   });
   res.json({ status: "ok" });
 });
@@ -39,7 +40,7 @@ app.post("/api/signup", (req, res) => {
 });
 
 app.get("/", (req, res) => {
-  myNode.sendermail();
+  // myNode.sendermail();
 });
 //-------------------------------------
 app.listen(process.env.PORT || 3001, () => {

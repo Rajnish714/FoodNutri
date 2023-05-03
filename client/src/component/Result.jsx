@@ -4,7 +4,7 @@ function Result({ food, addfood }) {
   return food.map((fooditem, index) => {
     return (
       <div key={index}>
-        <h1 onClick={(fooditem) => addfood(fooditem)}>
+        <h1 onClick={() => addfood(fooditem)}>
           {fooditem.name} {fooditem.calories}
         </h1>
       </div>
