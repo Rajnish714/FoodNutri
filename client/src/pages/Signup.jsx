@@ -1,52 +1,89 @@
 import React, { useState } from "react";
-import Input from "../component/Inputs";
+import Input from "./Inputs";
 import axios from "axios";
 
-function Signup() {
+
+function Signup({setSubmit}) {
+
+  //-----------STATS--------------------
+ 
+  const [userinfo, setuserinfo] = useState([]);
   const [userinput, takeuserinput] = useState({
     username: "",
+    email:"",
     password: "",
-  });
-  const [userinfo, setuserinfo] = useState([]);
+   
+    });
+    const [isTyping,setTyping]=useState(false)
 
+  //-----------STATS--------------------
+
+  //----------Handle INPUT CHANGE---------------
   function handleChange(event) {
     const { name, value } = event.target;
     takeuserinput((pre) => {
       return { ...pre, [name]: value };
     });
     setuserinfo(userinput);
+    setTyping(false)
+   
   }
+  //----------Handle Submit---------------
 
   function handleSubmit(event) {
     event.preventDefault();
+    
     axios
-      .post("http://localhost:3001/api/signup", userinfo)
-      .then((res) => console.log(res.data));
+      .post("/api/signup", userinfo)
+      .then((res) => {const {isType,otp,email}=res.data
+    
+        if(!isType){
+        setSubmit({submit:true,otp:otp,email:email})
+       
+      }else{ setTyping(res.data.isType) }
+       
+      
+      })
+        
+      
   }
+  
+  //------------------------------------------
 
   return (
-    <div className="container">
+   
+   <div className="container">
+     
       <div>
-        <h1>SIGNUP USER</h1>
+        <h1> SIGNUP USER </h1>
       </div>
+     
       <div>
         <form onSubmit={handleSubmit}>
-          <input
-            required
+      
+        <Input
+            handleChange={handleChange}
             name="username"
-            type="username"
-            placeholder="Enter username"
-            onChange={handleChange}
+            value={userinput.username}
+            placeholder="ENTER USERNAME"
+            
           />
-          <input
-            required
+          <Input
+            handleChange={handleChange}
+            name="email"
+            value={userinput.email}
+            placeholder="ENTER EMAIL"
+          />
+           {isTyping && <p>{"user is already exist"}</p>}
+          <Input
+            handleChange={handleChange}
             name="password"
-            type="password"
-            placeholder="password"
-            onChange={handleChange}
+            value={userinput.password}
+            placeholder="ENTER password"
           />
-
-          <button stype="submit">SignUp</button>
+         
+          <button stype="submit" > SignUp </button>
+       
         </form>
       </div>
     </div>

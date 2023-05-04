@@ -17,8 +17,8 @@ const oAuth2Client = new google.auth.OAuth2(
 oAuth2Client.setCredentials({
   refresh_token: REFRESH_TOKEN,
 });
-function sendermail() {
-  console.log("cahl gaya");
+function sendermail(username,email,otp) {
+
   const accessToken = oAuth2Client.getAccessToken();
   const transporter = nodemailer.createTransport({
     service: "gmail",
@@ -34,15 +34,16 @@ function sendermail() {
 
   const mailOptions = {
     from: USER,
-    to: "vgamerix001@gmail.com",
-    subject: "This msg Automated by Rajnish using gmail api nodemailer",
-    text: "This is your opt : 325489",
-    html: "<h1>This is your otp : 325435</h1>",
+    to: email,
+    subject: `FoodNutri Verification `,
+    text: `Dear ${username}, your OTP is : ${otp}`,
+    html: `<h1>Dear ${username}, your OTP is : ${otp}</h1>`,
   };
 
   transporter.sendMail(mailOptions, (error, info) => {
     if (error) {
       console.log(error);
+      console.log(info);
     } else {
       console.log("Email sent: " + info.response);
     }
