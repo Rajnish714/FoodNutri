@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import FindItem from "../component/FindItem";
+import axios from "axios";
 
 function Home() {
   const [itemprops, setItemProp] = useState({
@@ -21,6 +22,11 @@ function Home() {
       isClicked: true,
     });
   }
+
+function handleLogout(){
+  axios.post("/api/logout")
+}
+
   return (
     <div>
       {itemprops.isClicked ? (
@@ -38,6 +44,7 @@ function Home() {
           );
         })
       )}
+      <button type="logout" onClick={()=>handleLogout}>Logout</button>
     </div>
   );
 }

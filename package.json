@@ -1,0 +1,24 @@
+{
+  "name": "foodnutri",
+  "version": "1.0.0",
+  "description": "this app helps in to calculate daily nutritions intake",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Rajnish714/FoodNutri.git"
+  },
+  "author": "Rajnish",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Rajnish714/FoodNutri/issues"
+  },
+  "homepage": "https://github.com/Rajnish714/FoodNutri#readme",
+  "dependencies": {
+    "express-session": "^1.17.3",
+    "passport": "^0.6.0",
+    "passport-local-mongoose": "^8.0.0"
+  }
+}
