@@ -1,13 +1,17 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import Input from "./Inputs";
+import Verify from "./utils/verify";
 import axios from "axios";
 
-function Login({ setLoggedIn }) {
+function Login() {
+  Verify("/login", "/home", "/login");
+  // Verify("/login", "/home");
+
   const [userinput, setUserInput] = useState({
-        email: "",
+    email: "",
     password: "",
   });
-  
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -15,21 +19,26 @@ function Login({ setLoggedIn }) {
       ...prevUserInput,
       [name]: value,
     }));
-   
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-   
-    axios.post("/login",userinput)
+
+    axios
+      .post("/login", userinput)
       .then((res) => {
-       console.log("data", res);
+        const { user } = res.data;
+        if (user) {
+          sessionStorage.setItem("token", user);
+          window.location.href = "/home";
+        } else {
+          window.location.href = "/login";
+        }
       })
       .catch((error) => {
         console.log(error);
       });
   };
-
 
   return (
     <div className="container">
@@ -39,8 +48,6 @@ function Login({ setLoggedIn }) {
 
       <div>
         <form onSubmit={handleSubmit}>
-
-      
           <Input
             handleChange={handleChange}
             name="email"
@@ -58,6 +65,7 @@ function Login({ setLoggedIn }) {
 
           <button type="submit">Login</button>
         </form>
+        <Link to="/register">Ragister</Link>
       </div>
     </div>
   );

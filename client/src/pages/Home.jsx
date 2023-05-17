@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import FindItem from "../component/FindItem";
+import Verify from "./utils/verify";
 import axios from "axios";
 
 function Home() {
+  Verify("/api/home", "/home", "/login");
   const [itemprops, setItemProp] = useState({
     name: "",
     label: "",
@@ -23,9 +25,9 @@ function Home() {
     });
   }
 
-function handleLogout(){
-  axios.post("/api/logout")
-}
+  function handleLogout() {
+    axios.post("/api/logout");
+  }
 
   return (
     <div>
@@ -44,7 +46,9 @@ function handleLogout(){
           );
         })
       )}
-      <button type="logout" onClick={()=>handleLogout}>Logout</button>
+      <button type="logout" onClick={() => handleLogout()}>
+        Logout
+      </button>
     </div>
   );
 }

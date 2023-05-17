@@ -1,15 +1,18 @@
-
-
 import React, { useState } from "react";
 import Input from "./Inputs";
 import axios from "axios";
+import OTP from "./OTP";
+import Verify from "./utils/verify";
 
-function Signup({ setSubmit }) {
+function Signup() {
+  Verify("/api/home", "/home", "/register");
   const [userinput, setUserInput] = useState({
     username: "",
     email: "",
     password: "",
   });
+
+  const [Submited, isSubmit] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
 
   const handleChange = (event) => {
@@ -19,7 +22,6 @@ function Signup({ setSubmit }) {
       [name]: value,
     }));
     setIsTyping(false);
-    console.log(userinput);
   };
 
   const handleSubmit = (event) => {
@@ -28,12 +30,12 @@ function Signup({ setSubmit }) {
     axios
       .post("/api/signup", userinput)
       .then((res) => {
-        const { isType, otp, username, email, password } = res.data;
+        const { status, isType } = res.data;
 
-        if (!isType) {
-          setSubmit({ submit: true, otp, username, email, password });
+        if (status === "ok") {
+          isSubmit(true);
         } else {
-          setIsTyping(res.data.isType);
+          setIsTyping(isType);
         }
       })
       .catch((error) => {
@@ -41,7 +43,13 @@ function Signup({ setSubmit }) {
       });
   };
 
-  return (
+  return Submited ? (
+    <OTP
+      username={userinput.username}
+      email={userinput.email}
+      password={userinput.password}
+    />
+  ) : (
     <div className="container">
       <div>
         <h1> SIGNUP USER </h1>
@@ -78,54 +86,20 @@ function Signup({ setSubmit }) {
 
 export default Signup;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // import React, { useState } from "react";
 // import Input from "./Inputs";
 // import axios from "axios";
 
-
 // function Signup({setSubmit}) {
 
 //   //-----------STATS--------------------
- 
+
 //   const [userinfo, setuserinfo] = useState([]);
 //   const [userinput, takeuserinput] = useState({
 //     username: "",
 //     email:"",
 //     password: "",
-   
+
 //     });
 //     const [isTyping,setTyping]=useState(false)
 // console.log(userinfo);
@@ -139,47 +113,45 @@ export default Signup;
 //     });
 //     setuserinfo(userinput);
 //     setTyping(false)
-   
+
 //   }
 //   //----------Handle Submit---------------
 
 //   function handleSubmit(event) {
 //     event.preventDefault();
-    
+
 //     axios
 //       .post("/api/signup", userinfo)
 //       .then((res) => {const {isType,otp,username,email,password}=res.data
-    
+
 //         if(!isType){
 //         setSubmit({submit:true,otp:otp,username:username,email:email,password:password})
-       
+
 //       }else{ setTyping(res.data.isType) }
-       
-      
+
 //       })
-        
-      
+
 //   }
-  
+
 //   //------------------------------------------
 
 //   return (
-   
+
 //    <div className="container">
-     
+
 //       <div>
 //         <h1> SIGNUP USER </h1>
 //       </div>
-     
+
 //       <div>
 //         <form onSubmit={handleSubmit}>
-      
+
 //         <Input
 //             handleChange={handleChange}
 //             name="username"
 //             value={userinput.username}
 //             placeholder="ENTER USERNAME"
-            
+
 //           />
 //           <Input
 //             handleChange={handleChange}
@@ -194,9 +166,9 @@ export default Signup;
 //             value={userinput.password}
 //             placeholder="ENTER password"
 //           />
-         
+
 //           <button stype="submit" > SignUp </button>
-       
+
 //         </form>
 //       </div>
 //     </div>
