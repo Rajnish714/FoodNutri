@@ -26,10 +26,6 @@ app.use(
 );
 
 //mongoose schema-----------------------------------------------
-mongoose.connect("mongodb://127.0.0.1:27017/foodcalories", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
 
 //------------------------------------------------------------
 
@@ -86,9 +82,9 @@ app.post("/api/otp", (req, res) => {
             process.env.SECRET,
             (err, token) => {
               if (err) {
-                res.json({ err, status: "error" });
+                res.json({ user: false, status: "error" });
               } else {
-                res.json({ auth: token, status: "ok" });
+                res.json({ user: token, status: "ok" });
               }
             }
           );
@@ -102,7 +98,7 @@ app.post("/api/otp", (req, res) => {
   }
 });
 
-app.get("/api/home", (req, res) => {
+app.get("/api/verifytoken", (req, res) => {
   const token = req.header("x-access-token");
   const decode = jwt.verify(token, process.env.SECRET);
   const email = decode.email;
@@ -116,52 +112,37 @@ app.get("/api/home", (req, res) => {
     });
 });
 
-app
-  .route("/login")
-  .get((req, res) => {
-    const token = req.header("x-access-token");
-    const decode = jwt.verify(token, process.env.SECRET);
-    const email = decode.email;
-    models.user
-      .findOne({ email: email })
-      .then((foundUser) => {
-        res.json({ user: token, msg: "ye verify wala hai" });
-      })
-      .catch((err) => {
-        res.json({ user: false });
-      });
-  })
-  .post((req, res) => {
-    const { email, password } = req.body;
-    models.user
-      .findOne({ email: email })
-      .then((founduser) => {
-        bcrypt.compare(password, founduser.password, (err, result) => {
-          if (result) {
-            jwt.sign(
-              {
-                ID: founduser._id,
-                email: founduser.email,
-                username: founduser.username,
-              },
-              process.env.SECRET,
-              (err, token) => {
-                if (err) {
-                  res.json({ user: false, status: "error" });
-                } else {
-                  res.json({ user: token, status: "ok" });
-                }
+app.route("/login").post((req, res) => {
+  const { email, password } = req.body;
+  models.user
+    .findOne({ email: email })
+    .then((founduser) => {
+      bcrypt.compare(password, founduser.password, (err, result) => {
+        if (result) {
+          jwt.sign(
+            {
+              ID: founduser._id,
+              email: founduser.email,
+              username: founduser.username,
+            },
+            process.env.SECRET,
+            (err, token) => {
+              if (err) {
+                res.json({ user: false, status: "error" });
+              } else {
+                res.json({ user: token, status: "ok" });
               }
-            );
-          } else {
-            res.json({ status: "error", message: "wrong password" });
-          }
-        });
-      })
-      .catch((err) => {
-        console.log(err);
+            }
+          );
+        } else {
+          res.json({ status: "error", message: "wrong password" });
+        }
       });
-  });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
 
 app.post("/api/logout", (req, res) => {
   req.logout(function (err) {

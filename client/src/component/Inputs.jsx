@@ -6,10 +6,11 @@ function Input({ placeholder, name, handleChange, inputvalue, label }) {
       <h1>{label}</h1>
       <input
         placeholder={placeholder}
+        className="form-control"
         type="text"
         name={name}
         value={inputvalue}
-        onChange={(e) => handleChange(e.target.value)}
+        onChange={handleChange}
       />
     </div>
   );
