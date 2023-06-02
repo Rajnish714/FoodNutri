@@ -1,25 +1,23 @@
 import { useEffect, useCallback } from "react";
 import jwt_decode from "jwt-decode";
 import axios from "axios";
-import Cookie from "js-cookie";
 import { useNavigate } from "react-router-dom";
 
-function Verify(page, redirectpage, logout) {
+function Verify(route, page, redirectpage) {
   const navigate = useNavigate();
 
   const populateCode = useCallback(() => {
     axios
-      .get("/api/verifytoken", {
+      .get(route, {
         headers: {
-          "x-access-token": Cookie.get("token"),
+          "x-access-token": sessionStorage.getItem("token"),
         },
       })
       .then((res) => {
-        const { user } = res.data;
-        if (user) {
+        if (res.data.user) {
           navigate(page);
         } else {
-          Cookie.remove("token");
+          sessionStorage.removeItem("token");
           navigate(redirectpage);
         }
       })
@@ -27,25 +25,24 @@ function Verify(page, redirectpage, logout) {
         // Handle error
         console.error(error);
       });
-  }, [navigate, page, redirectpage]); // Include redirectpage in the dependency array
+  }, [route, navigate, page, redirectpage]); // Include redirectpage in the dependency array
 
   useEffect(() => {
-    const gettoken = Cookie.get("token");
-    const token = decodeURIComponent(gettoken);
+    const token = sessionStorage.getItem("token");
 
     if (token) {
       try {
         const user = jwt_decode(token);
 
         if (!user) {
-          Cookie.remove("token");
+          sessionStorage.removeItem("token");
           navigate(redirectpage);
         } else {
           populateCode();
         }
       } catch (error) {
         // Invalid token
-        Cookie.remove("token");
+        sessionStorage.removeItem("token");
         navigate(redirectpage);
       }
     } else {
@@ -54,7 +51,7 @@ function Verify(page, redirectpage, logout) {
   }, [navigate, populateCode, redirectpage]);
 
   // Return something meaningful from the component
-  return populateCode;
+  return null;
 }
 
 export default Verify;

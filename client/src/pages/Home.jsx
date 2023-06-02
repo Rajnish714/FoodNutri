@@ -1,13 +1,10 @@
 import React, { useState } from "react";
 import FindItem from "../component/FindItem";
-import Verify from "../utils/verify";
-import { useNavigate } from "react-router-dom";
-import Cookie from "js-cookie";
+import Verify from "./utils/verify";
+import axios from "axios";
 
 function Home() {
-  Verify("/home", "/login");
-  const navigate = useNavigate();
-
+  Verify("/api/home", "/home", "/login");
   const [itemprops, setItemProp] = useState({
     name: "",
     label: "",
@@ -29,8 +26,7 @@ function Home() {
   }
 
   function handleLogout() {
-    Cookie.remove("token");
-    navigate("/login");
+    axios.post("/api/logout");
   }
 
   return (
@@ -50,11 +46,7 @@ function Home() {
           );
         })
       )}
-      <button
-        className="btn btn-danger ms-1 mt-1"
-        type="logout"
-        onClick={(e) => handleLogout(e)}
-      >
+      <button type="logout" onClick={() => handleLogout()}>
         Logout
       </button>
     </div>

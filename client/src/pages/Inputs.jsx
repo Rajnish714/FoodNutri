@@ -3,14 +3,14 @@ import React from "react";
 function Input({ placeholder, name, handleChange, inputvalue, label }) {
   return (
     <div>
-      <h1>{label}</h1>
       <input
-        placeholder={placeholder}
-        type="text"
+        required
         name={name}
+        type={name}
+        placeholder={placeholder}
         value={inputvalue}
-        onChange={(e) => handleChange(e.target.value)}
-      />
+        onChange={handleChange}
+      />{" "}
     </div>
   );
 }

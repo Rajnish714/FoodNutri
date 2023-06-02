@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import Input from "../component/Inputs";
-import Verify from "../utils/verify";
+import Input from "./Inputs";
+import Verify from "./utils/verify";
 import axios from "axios";
-import Button from "../component/Button";
-import Cookie from "js-cookie";
+
 function Login() {
-  Verify("/home", "/login");
+  Verify("/login", "/home", "/login");
   // Verify("/login", "/home");
 
   const [userinput, setUserInput] = useState({
@@ -30,7 +29,7 @@ function Login() {
       .then((res) => {
         const { user } = res.data;
         if (user) {
-          Cookie.set("token", user);
+          sessionStorage.setItem("token", user);
           window.location.href = "/home";
         } else {
           window.location.href = "/login";
@@ -63,9 +62,10 @@ function Login() {
             placeholder="Enter Password"
             type="password"
           />
-          <Button classStyle="btn btn-primary mb-2" btnName="Login" />
+
+          <button type="submit">Login</button>
         </form>
-        <Link to="/register">Register</Link>
+        <Link to="/register">Ragister</Link>
       </div>
     </div>
   );
