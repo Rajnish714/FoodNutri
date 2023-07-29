@@ -6,6 +6,7 @@ import axios from "axios";
 import Button from "../component/Button";
 import Cookie from "js-cookie";
 function Login() {
+  console.log("test log");
   Verify("/home", "/login");
   // Verify("/login", "/home");
 
