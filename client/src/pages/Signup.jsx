@@ -7,7 +7,7 @@ import Button from "../component/Button";
 import { Link } from "react-router-dom";
 
 function Signup() {
-  Verify("/home", "/register");
+  // Verify("/home", "/register");
   const [userinput, setUserInput] = useState({
     username: "",
     email: "",

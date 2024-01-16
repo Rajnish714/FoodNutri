@@ -36,7 +36,7 @@ function FindItem({ name, label, clicked }) {
         inputvalue={data}
         handleChange={handleChange}
       />
-
+<button onClick={()=>clicked(false)}>Cancel</button>
       <Result food={food} addfood={addFood} />
     </div>
   );

@@ -1,12 +1,13 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import FindItem from "../component/FindItem";
-import Verify from "../utils/verify";
-import { useNavigate } from "react-router-dom";
-import Cookie from "js-cookie";
 
+// import { useNavigate } from "react-router-dom";
+import Cookie from "js-cookie";
+import { VerifyContext } from "../utils/VerifyContext";
 function Home() {
-  Verify("/home", "/login");
-  const navigate = useNavigate();
+  const { setAuthenticated } = useContext(VerifyContext);
+  // Verify("/home", "/login");
+  // const navigate = useNavigate();
 
   const [itemprops, setItemProp] = useState({
     name: "",
@@ -29,8 +30,9 @@ function Home() {
   }
 
   function handleLogout() {
+    return setAuthenticated(false);
     Cookie.remove("token");
-    navigate("/login");
+    // navigate("/login");
   }
 
   return (

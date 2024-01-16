@@ -1,13 +1,16 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useContext } from "react";
+import { Link, Navigate } from "react-router-dom";
 import Input from "../component/Inputs";
-import Verify from "../utils/verify";
+// import Verify from "../utils/verify";
 import axios from "axios";
 import Button from "../component/Button";
 import Cookie from "js-cookie";
+import { VerifyContext } from "../utils/VerifyContext";
+
 function Login() {
-  console.log("test log");
-  Verify("/home", "/login");
+  const { isAuthenticated, setAuthenticated } = useContext(VerifyContext);
+
+  // Verify("/home", "/login");
   // Verify("/login", "/home");
 
   const [userinput, setUserInput] = useState({
@@ -29,9 +32,12 @@ function Login() {
     axios
       .post("/login", userinput)
       .then((res) => {
-        const { user } = res.data;
+        const { user, auth } = res.data;
         if (user) {
+          console.log(auth, "login auth");
+
           Cookie.set("token", user);
+          return setAuthenticated(auth);
           window.location.href = "/home";
         } else {
           window.location.href = "/login";
@@ -41,7 +47,6 @@ function Login() {
         console.log(error);
       });
   };
-
   return (
     <div className="container">
       <div>
@@ -65,6 +70,9 @@ function Login() {
             type="password"
           />
           <Button classStyle="btn btn-primary mb-2" btnName="Login" />
+          <button>
+            <Link to="/">home</Link>
+          </button>
         </form>
         <Link to="/register">Register</Link>
       </div>

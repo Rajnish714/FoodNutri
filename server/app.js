@@ -42,7 +42,9 @@ app.post("/api/foodinfo", (req, res) => {
 //--------------------------------------------------
 
 // ------------- user registeration ----------------------
-
+app.get("/protected", (req, res) => {
+  res.json({ protect: "this is protected", auth: false });
+});
 app.post("/api/signup", (req, res) => {
   const { username, email } = req.body;
 
@@ -128,9 +130,9 @@ app.route("/login").post((req, res) => {
             process.env.SECRET,
             (err, token) => {
               if (err) {
-                res.json({ user: false, status: "error" });
+                res.json({ user: false, status: "error", auth: false });
               } else {
-                res.json({ user: token, status: "ok" });
+                res.json({ user: token, status: "ok", auth: true });
               }
             }
           );
