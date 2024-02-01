@@ -1,0 +1,25 @@
+{
+  "name": "foodnutri",
+  "version": "1.0.0",
+  "main": "./src/main.ts",
+  "scripts": {
+    "server:run": "ts-node ./src/main.ts",
+    "server:watch":"nodemon ./src/main.ts",
+    "build": "node esbuild.config.js",
+    "build:clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.1",
+    "express": "^4.18.2",
+    "node": "^21.6.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.16",
+    "esbuild": "^0.20.0",
+    "nodemon": "^3.0.3"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
