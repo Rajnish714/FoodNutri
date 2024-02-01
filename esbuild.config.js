@@ -9,6 +9,6 @@ const esbuild = require("esbuild");
         sourcemap: false,
         minify: true,
         treeShaking: true,
-        minifyWhitespace: true
+        minifyWhitespace: true,
     })
 })()

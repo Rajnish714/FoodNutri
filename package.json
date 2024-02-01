@@ -5,8 +5,8 @@
   "scripts": {
     "server:run": "ts-node ./src/main.ts",
     "server:watch":"nodemon ./src/main.ts",
-    "build": "node esbuild.config.js",
-    "build:clean": "rm -rf dist"
+    "bundle": "node esbuild.config.js",
+    "bundle:clean": "rm -rf dist"
   },
   "dependencies": {
     "dotenv": "^16.4.1",
