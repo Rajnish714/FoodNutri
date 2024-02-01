@@ -1,4 +1,5 @@
-import express, { Application, application, Request, Response } from "express"
+import express, { Application, Request, Response } from "express"
+import root from "./routes/root"
 import { port, stage } from "./utils/contants"
 
 async function main() {
@@ -6,14 +7,12 @@ async function main() {
     try {
         console.log("Stage: ", stage);
 
-        app.get("/", (_req: Request, res: Response): Response => {
-            return res.json({ message: "Hello" });
-        });
-
+        app.use("/", root)
 
         app.listen(port, () => {
             console.log("server started on port ", 3000)
         })
+
     } catch (err) {
         const error = err as Error;
         console.error(error.message);
