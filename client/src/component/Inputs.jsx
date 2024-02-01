@@ -7,7 +7,7 @@ function Input({ placeholder, name, handleChange, inputvalue, label }) {
       <input
         placeholder={placeholder}
         className="form-control"
-        type="text"
+        type={name}
         name={name}
         value={inputvalue}
         onChange={handleChange}

@@ -6,6 +6,7 @@ const bodyParser = require("body-parser");
 const myNode = require("./nodemailer");
 const session = require("express-session");
 const jwt = require("jsonwebtoken");
+const token = require("./utile_functions");
 require("dotenv").config();
 
 const app = express();
@@ -116,26 +117,52 @@ app.get("/api/verifytoken", (req, res) => {
 
 app.route("/login").post((req, res) => {
   const { email, password } = req.body;
+
   models.user
     .findOne({ email: email })
     .then((founduser) => {
       bcrypt.compare(password, founduser.password, (err, result) => {
         if (result) {
-          jwt.sign(
-            {
+          const payload = {
+            Access_Token_Payload: {
               ID: founduser._id,
               email: founduser.email,
               username: founduser.username,
             },
-            process.env.SECRET,
-            (err, token) => {
-              if (err) {
-                res.json({ user: false, status: "error", auth: false });
-              } else {
-                res.json({ user: token, status: "ok", auth: true });
-              }
-            }
-          );
+            Ref_Token_Payload: {
+              ID: founduser._id,
+              email: founduser.email,
+              username: founduser.username,
+            },
+          };
+
+          try {
+            const tokens = token.tokenGenrator(payload);
+
+            res.json({
+              accessToken: tokens.accessToken,
+              refresh_token: tokens.refreshToken,
+            });
+          } catch (error) {
+            res.status(500).json({ error: "Internal server error" });
+          }
+
+          // jwt.sign(
+          //   {
+          //     ID: founduser._id,
+          //     email: founduser.email,
+          //     username: founduser.username,
+          //   },
+          //   process.env.SECRET,
+          //   { expiresIn: expiration },
+          //   (err, token) => {
+          //     if (err) {
+          //       res.json({ auth_token: false, status: "error" });
+          //     } else {
+          //       res.json({ auth_token: token, status: "ok" });
+          //     }
+          //   }
+          // );
         } else {
           res.json({ status: "error", message: "wrong password" });
         }

@@ -2,8 +2,9 @@ import React, { useContext, useState } from "react";
 import FindItem from "../component/FindItem";
 
 // import { useNavigate } from "react-router-dom";
-import Cookie from "js-cookie";
+//import Cookie from "js-cookie";
 import { VerifyContext } from "../utils/VerifyContext";
+import { Navigate, Link } from "react-router-dom";
 function Home() {
   const { setAuthenticated } = useContext(VerifyContext);
   // Verify("/home", "/login");
@@ -31,7 +32,7 @@ function Home() {
 
   function handleLogout() {
     return setAuthenticated(false);
-    Cookie.remove("token");
+    //Cookie.remove("token");
     // navigate("/login");
   }
 
@@ -58,6 +59,10 @@ function Home() {
         onClick={(e) => handleLogout(e)}
       >
         Logout
+      </button>
+
+      <button>
+        <Link to="/test">test</Link>
       </button>
     </div>
   );

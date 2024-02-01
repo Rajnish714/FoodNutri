@@ -8,7 +8,7 @@ import Cookie from "js-cookie";
 import { VerifyContext } from "../utils/VerifyContext";
 
 function Login() {
-  const { isAuthenticated, setAuthenticated } = useContext(VerifyContext);
+  const { isAuthenticated, login } = useContext(VerifyContext);
 
   // Verify("/home", "/login");
   // Verify("/login", "/home");
@@ -26,28 +26,13 @@ function Login() {
     }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-
-    axios
-      .post("/login", userinput)
-      .then((res) => {
-        const { user, auth } = res.data;
-        if (user) {
-          console.log(auth, "login auth");
-
-          Cookie.set("token", user);
-          return setAuthenticated(auth);
-          window.location.href = "/home";
-        } else {
-          window.location.href = "/login";
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    login(userinput);
   };
-  return (
+  return isAuthenticated ? (
+    <Navigate to="/" />
+  ) : (
     <div className="container">
       <div>
         <h1>Login User</h1>
@@ -63,11 +48,11 @@ function Login() {
           />
 
           <Input
+            type="password"
             handleChange={handleChange}
             name="password"
             value={userinput.password}
             placeholder="Enter Password"
-            type="password"
           />
           <Button classStyle="btn btn-primary mb-2" btnName="Login" />
           <button>

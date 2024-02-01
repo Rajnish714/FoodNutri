@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Input from "../component/Inputs";
 import axios from "axios";
 import OTP from "./OTP";
-import Verify from "../utils/verify";
+//import Verify from "../utils/verify";
 import Button from "../component/Button";
 import { Link } from "react-router-dom";
 
