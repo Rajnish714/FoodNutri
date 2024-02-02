@@ -7,17 +7,23 @@ export const createNewUser = async (_, req: NewUserDTO): Promise<User> => {
   const { username, password } = req.newUserData;
   const hash = createHash("sha256");
   hash.update(password);
+  let newUser: User;
   const newPass = hash.digest("hex");
-  const newUser = await prisma.user
-    .create({
-      data: {
-        username: username,
-        password: newPass,
-      },
-    })
-    .catch((err) => {
-      console.error(err);
-      return null;
-    });
+  try {
+    newUser = await prisma.user
+      .create({
+        data: {
+          username: username,
+          password: newPass,
+        },
+      })
+      .catch((err) => {
+        console.error(err);
+        return null;
+      });
+  } catch (err) {
+    console.log(err);
+    throw new Error(err);
+  }
   return newUser;
 };
