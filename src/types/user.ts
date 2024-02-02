@@ -1,12 +1,6 @@
-export class User {
-    private username: string
-    private password: string
-
-    constructor(username: string, password: string) {
-        this.username = username
-        this.password = password
-    }
-    async getUser() {
-        return this
-    }
+export interface NewUserDTO {
+  newUserData: {
+    username: string;
+    password: string;
+  };
 }
