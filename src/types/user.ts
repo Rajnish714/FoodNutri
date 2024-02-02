@@ -4,3 +4,7 @@ export interface NewUserDTO {
     password: string;
   };
 }
+
+export interface GetUserByIdDTO {
+  id: string;
+}

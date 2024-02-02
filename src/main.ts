@@ -9,6 +9,7 @@ import {
   ApolloServerPluginLandingPageGraphQLPlayground,
 } from "apollo-server-core";
 import { Mutation } from "./mutations/index";
+import { Query } from "./queries";
 
 async function main() {
   const app: Application = express();
@@ -18,6 +19,7 @@ async function main() {
       introspection: true,
       typeDefs: [userSchema],
       resolvers: {
+        Query,
         Mutation,
       },
       plugins: [

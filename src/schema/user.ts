@@ -8,14 +8,14 @@ export const userSchema = gql`
   }
 
   type Query {
-    users: [User]
+    getAllUsers: [User]
+    getUserById(id: String!): User!
   }
 
   input NewUserInput {
     username: String!
     password: String!
   }
-
   type Mutation {
     createNewUser(newUserData: NewUserInput!): User!
   }
