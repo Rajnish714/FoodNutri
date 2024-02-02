@@ -8,7 +8,7 @@ import {
   ApolloServerPluginLandingPageDisabled,
   ApolloServerPluginLandingPageGraphQLPlayground,
 } from "apollo-server-core";
-import { createNewUser } from "./resolvers/resolvers";
+import { Mutation } from "./mutations/index";
 
 async function main() {
   const app: Application = express();
@@ -18,9 +18,7 @@ async function main() {
       introspection: true,
       typeDefs: [userSchema],
       resolvers: {
-        Mutation: {
-          createNewUser,
-        },
+        Mutation,
       },
       plugins: [
         ApolloServerPluginLandingPageDisabled(),
