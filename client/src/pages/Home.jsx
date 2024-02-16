@@ -5,10 +5,9 @@ import FindItem from "../component/FindItem";
 //import Cookie from "js-cookie";
 import { VerifyContext } from "../utils/VerifyContext";
 import { Navigate, Link } from "react-router-dom";
+import axios from "axios";
 function Home() {
   const { setAuthenticated } = useContext(VerifyContext);
-  // Verify("/home", "/login");
-  // const navigate = useNavigate();
 
   const [itemprops, setItemProp] = useState({
     name: "",
@@ -30,11 +29,11 @@ function Home() {
     });
   }
 
-  function handleLogout() {
+  const handleLogout = async () => {
+    const response = await axios.get("/api/logout");
+    console.log(response);
     return setAuthenticated(false);
-    //Cookie.remove("token");
-    // navigate("/login");
-  }
+  };
 
   return (
     <div>
@@ -56,7 +55,7 @@ function Home() {
       <button
         className="btn btn-danger ms-1 mt-1"
         type="logout"
-        onClick={(e) => handleLogout(e)}
+        onClick={() => handleLogout()}
       >
         Logout
       </button>

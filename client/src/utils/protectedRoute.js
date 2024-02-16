@@ -4,7 +4,6 @@ import { VerifyContext } from "./VerifyContext";
 
 const ProtectedRoute = () => {
   const { isAuthenticated } = useContext(VerifyContext);
-  console.log("load");
 
   // if (isAuthenticated === null) {
 

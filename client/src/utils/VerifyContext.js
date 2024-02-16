@@ -9,7 +9,7 @@ function ContextProvider({ children }) {
     try {
       const response = await axios.post("/login", userinput);
       console.log(response);
-      return setAuthenticated(response.data.accessToken);
+      return setAuthenticated(response.data.access_token);
 
       // const { user, auth } = res.data;
       // if (user) {
@@ -25,45 +25,21 @@ function ContextProvider({ children }) {
       console.log(error);
     }
   };
-  let count = 0;
-  // const ref_token = localStorage.getItem("authh");
-  useEffect(() => {
-    const fetchData = async () => {
-      console.log((count += 1));
-      // if (isAuthenticated) {
-      //   try {
-      //     const response = await axios.get("api/genarate_token", {
-      //       header: {
-      //         autherization: `bearer ${isAuthenticated}`,
-      //       },
-      //     });
-      //     setAuthenticated(response)
-      //   } catch (error) {
-      //     console.log(error);
-      //   }
-      // }
-      // elseif(ref_token){
 
-      // }
-      console.log("every route");
-      // if (ref_token) {
-      //   try {
-      //     const response = await axios.get("api/refreshtoken", {
-      //       headers: {
-      //         Authorization: `Bearer ${ref_token}`,
-      //       },
-      //     });
-      //     setAuthenticated(response.data.auth);
-      //   } catch (err) {
-      //     console.log(err);
-      //     setAuthenticated(false);
-      //   }
-      // } else {
-      //   console.log(false);
-      //   setAuthenticated(false);
-      // }
-    };
-    fetchData();
+  const checkRefreshToken = async () => {
+    const response = await axios.get("/refresh-token");
+    console.log(response);
+    try {
+      if (response) {
+        setAuthenticated(response.data.access_token);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    checkRefreshToken();
   }, []);
 
   return (

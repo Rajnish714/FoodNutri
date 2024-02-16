@@ -1,7 +1,8 @@
 const express = require("express");
 const { mongoose, Schema } = require("mongoose");
-var models = require("./db")(mongoose);
-var cors = require("cors");
+const cookieParser = require("cookie-parser");
+const models = require("./db")(mongoose);
+const cors = require("cors");
 const bodyParser = require("body-parser");
 const myNode = require("./nodemailer");
 const session = require("express-session");
@@ -17,7 +18,7 @@ const saltRounds = 10;
 app.use(cors());
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
+app.use(cookieParser());
 app.use(
   session({
     secret: "My dog name was jack",
@@ -115,7 +116,34 @@ app.get("/api/verifytoken", (req, res) => {
     });
 });
 
-app.route("/login").post((req, res) => {
+app.use((req, res, next) => {
+  console.log(req.originalUrl, "url hai jaha me hu");
+  next();
+});
+
+app.use("/refresh-token", (req, res, next) => {
+  const refreshtoken = req.cookies.refresh_token;
+  if (refreshtoken) {
+    const accessToken = jwt.sign({ user: true }, process.env.SECRET, {
+      expiresIn: "15m",
+    });
+    res.json({
+      access_token: accessToken,
+    });
+  } else {
+    res.json({
+      access_token: null,
+    });
+  }
+  next();
+});
+
+const validToken = (req, res, next) => {
+  console.log("validlogin hua");
+  next();
+};
+
+app.route("/login").post(validToken, (req, res) => {
   const { email, password } = req.body;
 
   models.user
@@ -138,10 +166,9 @@ app.route("/login").post((req, res) => {
 
           try {
             const tokens = token.tokenGenrator(payload);
-
+            res.cookie("refresh_token", tokens.refreshToken);
             res.json({
-              accessToken: tokens.accessToken,
-              refresh_token: tokens.refreshToken,
+              access_token: tokens.accessToken,
             });
           } catch (error) {
             res.status(500).json({ error: "Internal server error" });
@@ -173,13 +200,9 @@ app.route("/login").post((req, res) => {
     });
 });
 
-app.post("/api/logout", (req, res) => {
-  req.logout(function (err) {
-    if (err) {
-      return next(err);
-    }
-    res.redirect("/api/home");
-  });
+app.get("/api/logout", (req, res) => {
+  res.clearCookie("refresh_token");
+  res.json({ access_token: null });
 });
 //-------------------------------------
 app.listen(3001, () => {

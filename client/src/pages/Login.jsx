@@ -1,17 +1,11 @@
 import React, { useState, useContext } from "react";
 import { Link, Navigate } from "react-router-dom";
 import Input from "../component/Inputs";
-// import Verify from "../utils/verify";
-import axios from "axios";
 import Button from "../component/Button";
-import Cookie from "js-cookie";
 import { VerifyContext } from "../utils/VerifyContext";
 
 function Login() {
   const { isAuthenticated, login } = useContext(VerifyContext);
-
-  // Verify("/home", "/login");
-  // Verify("/login", "/home");
 
   const [userinput, setUserInput] = useState({
     email: "",
