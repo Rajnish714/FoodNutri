@@ -1,18 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import Input from "../component/Inputs";
 import axios from "axios";
 import OTP from "./OTP";
 //import Verify from "../utils/verify";
 import Button from "../component/Button";
 import { Link } from "react-router-dom";
+import { VerifyContext } from "../utils/VerifyContext";
 
 function Signup() {
   // Verify("/home", "/register");
-  const [userinput, setUserInput] = useState({
-    username: "",
-    email: "",
-    password: "",
-  });
+  const { userinput, setUserInput } = useContext(VerifyContext);
 
   const [Submited, isSubmit] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
@@ -46,17 +43,12 @@ function Signup() {
   };
 
   return Submited ? (
-    <OTP
-      username={userinput.username}
-      email={userinput.email}
-      password={userinput.password}
-    />
+    <OTP password={userinput.password} />
   ) : (
     <div className="container">
       <div>
-        <h1> SIGNUP USER </h1>
-      </div>
-
+        <h1> SIGNUP USER </h1>{" "}
+      </div>{" "}
       <div>
         <form onSubmit={handleSubmit}>
           <Input
@@ -70,8 +62,8 @@ function Signup() {
             name="email"
             value={userinput.email}
             placeholder="ENTER EMAIL"
-          />
-          {isTyping && <p>{"user is already exist"}</p>}
+          />{" "}
+          {isTyping && <p> {"user is already exist"} </p>}{" "}
           <Input
             handleChange={handleChange}
             name="password"
@@ -81,12 +73,12 @@ function Signup() {
           <Button
             classStyle="btn btn-secondary mt-1  float-start"
             btnName={"Sign up"}
-          />
-        </form>
-      </div>
+          />{" "}
+        </form>{" "}
+      </div>{" "}
       <Link to="/login" className="float-end">
         if already a user!
-      </Link>
+      </Link>{" "}
     </div>
   );
 }

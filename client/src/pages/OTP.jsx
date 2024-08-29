@@ -4,11 +4,9 @@ import Input from "../component/Inputs";
 import axios from "axios";
 import Verify from "../utils/verify";
 
-function OTP({ username, email, password }) {
+function OTP({ password }) {
   Verify("/home", "/register");
   const [User, setUserOTP] = useState({
-    username: username,
-    email: email,
     password: password,
     otp: "",
   });
@@ -17,6 +15,7 @@ function OTP({ username, email, password }) {
   console.log(User.otp);
 
   console.log(User);
+
   function handleSubmit(event) {
     event.preventDefault();
 
@@ -38,8 +37,8 @@ function OTP({ username, email, password }) {
   return (
     <form onSubmit={handleSubmit}>
       <h1>
-        We Sent an OTP on "{User.email}", gmail Address! Please Verify your OTP
-      </h1>
+        We Sent an OTP on "{User.email}", gmail Address!Please Verify your OTP{" "}
+      </h1>{" "}
       <Input
         handleChange={(e) =>
           setUserOTP((pre) => {
@@ -50,7 +49,7 @@ function OTP({ username, email, password }) {
         value={OTP}
         placeholder="ENTER OTP"
       />
-      <button type="submit">Submit</button>
+      <button type="submit"> Submit </button>{" "}
     </form>
   );
 }

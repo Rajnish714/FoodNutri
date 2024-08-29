@@ -4,6 +4,11 @@ export const VerifyContext = createContext();
 
 function ContextProvider({ children }) {
   const [isAuthenticated, setAuthenticated] = useState(null);
+  const [userinput, setUserInput] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
 
   const login = async (userinput) => {
     try {
@@ -27,6 +32,7 @@ function ContextProvider({ children }) {
   };
 
   const checkRefreshToken = async () => {
+    console.log(isAuthenticated);
     const response = await axios.get("/refresh-token");
     console.log(response);
     try {
@@ -44,9 +50,15 @@ function ContextProvider({ children }) {
 
   return (
     <VerifyContext.Provider
-      value={{ isAuthenticated, setAuthenticated, login }}
+      value={{
+        isAuthenticated,
+        setAuthenticated,
+        login,
+        userinput,
+        setUserInput,
+      }}
     >
-      {children}
+      {children}{" "}
     </VerifyContext.Provider>
   );
 }

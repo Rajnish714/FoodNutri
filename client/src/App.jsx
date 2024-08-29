@@ -15,19 +15,14 @@ import {
 function App() {
   //--------------- react custom routing -----------------------------
 
-  //-----------------------------------------------------------------
-
-  // }
   return (
     <Router>
       <Routes>
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<Navigate to="/home" replace />} />
-
           <Route path="/home" element={<Home />} />
           <Route path="/test" element={<Test />} />
         </Route>
-
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<SignUp />} />
         <Route path="*" element={<NotFoundPage />} />
