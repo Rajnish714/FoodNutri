@@ -58,6 +58,8 @@ app.post("/api/signup", (req, res) => {
       } else {
         const otp = Math.floor(Math.random() * (10000 - 3000 + 1) + 3000);
         req.session.otp = otp;
+        req.session.username = username;
+        req.session.email = email;
         res.json({ isType: false, status: "ok" });
         myNode.sendermail(username, email, otp);
       }
@@ -68,9 +70,10 @@ app.post("/api/signup", (req, res) => {
 });
 
 app.post("/api/otp", (req, res) => {
-  const { username, email, password, otp } = req.body;
+  const { password, otp } = req.body;
   const OTP = req.session.otp;
-
+  const username = req.session.username;
+  const email = req.session.email;
   if (otp == OTP) {
     bcrypt.hash(password, saltRounds, (err, hash) => {
       // Store hash in your password DB.
@@ -173,23 +176,6 @@ app.route("/login").post(validToken, (req, res) => {
           } catch (error) {
             res.status(500).json({ error: "Internal server error" });
           }
-
-          // jwt.sign(
-          //   {
-          //     ID: founduser._id,
-          //     email: founduser.email,
-          //     username: founduser.username,
-          //   },
-          //   process.env.SECRET,
-          //   { expiresIn: expiration },
-          //   (err, token) => {
-          //     if (err) {
-          //       res.json({ auth_token: false, status: "error" });
-          //     } else {
-          //       res.json({ auth_token: token, status: "ok" });
-          //     }
-          //   }
-          // );
         } else {
           res.json({ status: "error", message: "wrong password" });
         }

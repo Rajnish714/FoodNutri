@@ -1,0 +1,14 @@
+{
+  "name": "foodnutri",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "client": "npm run start --prefix client ",
+    "server": "npm run watch --prefix server ",
+    "install": "npm install --prefix server && npm install --prefix client",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
