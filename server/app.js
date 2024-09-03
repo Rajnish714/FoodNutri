@@ -1,5 +1,5 @@
 const express = require("express");
-const { mongoose, Schema } = require("mongoose");
+const {mongoose, Schema} = require("mongoose");
 const cookieParser = require("cookie-parser");
 const models = require("./db")(mongoose);
 const cors = require("cors");
@@ -8,6 +8,7 @@ const myNode = require("./nodemailer");
 const session = require("express-session");
 const jwt = require("jsonwebtoken");
 const token = require("./utile_functions");
+const foodRouter = require("./src/routes/foodapi/foodapi.router");
 require("dotenv").config();
 
 const app = express();
@@ -17,8 +18,10 @@ const saltRounds = 10;
 
 app.use(cors());
 app.use(express.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
+
+app.use("/getfood", foodRouter);
 app.use(
   session({
     secret: "My dog name was jack",
@@ -39,28 +42,28 @@ app.post("/api/foodinfo", (req, res) => {
     console.log("aa gaya data");
     console.log(req.body);
   });
-  res.json({ status: "ok" });
+  res.json({status: "ok"});
 });
 //--------------------------------------------------
 
 // ------------- user registeration ----------------------
 app.get("/protected", (req, res) => {
-  res.json({ protect: "this is protected", auth: false });
+  res.json({protect: "this is protected", auth: false});
 });
 app.post("/api/signup", (req, res) => {
-  const { username, email } = req.body;
+  const {username, email} = req.body;
 
   models.user
-    .findOne({ email: email })
+    .findOne({email: email})
     .then((founduser) => {
       if (founduser) {
-        res.send({ isType: true });
+        res.send({isType: true});
       } else {
         const otp = Math.floor(Math.random() * (10000 - 3000 + 1) + 3000);
         req.session.otp = otp;
         req.session.username = username;
         req.session.email = email;
-        res.json({ isType: false, status: "ok" });
+        res.json({isType: false, status: "ok"});
         myNode.sendermail(username, email, otp);
       }
     })
@@ -70,7 +73,7 @@ app.post("/api/signup", (req, res) => {
 });
 
 app.post("/api/otp", (req, res) => {
-  const { password, otp } = req.body;
+  const {password, otp} = req.body;
   const OTP = req.session.otp;
   const username = req.session.username;
   const email = req.session.email;
@@ -85,13 +88,13 @@ app.post("/api/otp", (req, res) => {
       User.save().then((user, err) => {
         if (user) {
           jwt.sign(
-            { ID: user._id, username: user.username },
+            {ID: user._id, username: user.username},
             process.env.SECRET,
             (err, token) => {
               if (err) {
-                res.json({ user: false, status: "error" });
+                res.json({user: false, status: "error"});
               } else {
-                res.json({ user: token, status: "ok" });
+                res.json({user: token, status: "ok"});
               }
             }
           );
@@ -101,7 +104,7 @@ app.post("/api/otp", (req, res) => {
       });
     });
   } else {
-    res.json({ status: "error" });
+    res.json({status: "error"});
   }
 });
 
@@ -110,12 +113,12 @@ app.get("/api/verifytoken", (req, res) => {
   const decode = jwt.verify(token, process.env.SECRET);
   const email = decode.email;
   models.user
-    .findOne({ email: email })
+    .findOne({email: email})
     .then((foundUser) => {
-      res.json({ user: token, msg: "ye verify wala hai" });
+      res.json({user: token, msg: "ye verify wala hai"});
     })
     .catch((err) => {
-      res.json({ user: false });
+      res.json({user: false});
     });
 });
 
@@ -127,7 +130,7 @@ app.use((req, res, next) => {
 app.use("/refresh-token", (req, res, next) => {
   const refreshtoken = req.cookies.refresh_token;
   if (refreshtoken) {
-    const accessToken = jwt.sign({ user: true }, process.env.SECRET, {
+    const accessToken = jwt.sign({user: true}, process.env.SECRET, {
       expiresIn: "15m",
     });
     res.json({
@@ -147,10 +150,10 @@ const validToken = (req, res, next) => {
 };
 
 app.route("/login").post(validToken, (req, res) => {
-  const { email, password } = req.body;
+  const {email, password} = req.body;
 
   models.user
-    .findOne({ email: email })
+    .findOne({email: email})
     .then((founduser) => {
       bcrypt.compare(password, founduser.password, (err, result) => {
         if (result) {
@@ -174,10 +177,10 @@ app.route("/login").post(validToken, (req, res) => {
               access_token: tokens.accessToken,
             });
           } catch (error) {
-            res.status(500).json({ error: "Internal server error" });
+            res.status(500).json({error: "Internal server error"});
           }
         } else {
-          res.json({ status: "error", message: "wrong password" });
+          res.json({status: "error", message: "wrong password"});
         }
       });
     })
@@ -188,9 +191,7 @@ app.route("/login").post(validToken, (req, res) => {
 
 app.get("/api/logout", (req, res) => {
   res.clearCookie("refresh_token");
-  res.json({ access_token: null });
+  res.json({access_token: null});
 });
 //-------------------------------------
-app.listen(3001, () => {
-  console.log(`server has started on 3001`);
-});
+module.exports = app;
