@@ -1,14 +1,16 @@
 const express = require("express");
-const {mongoose, Schema} = require("mongoose");
 const cookieParser = require("cookie-parser");
-const models = require("./db")(mongoose);
+const models = require("./db");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const myNode = require("./nodemailer");
 const session = require("express-session");
 const jwt = require("jsonwebtoken");
-const token = require("./utile_functions");
+//const token = require("./utile_functions");
+const path = require("path");
 const foodRouter = require("./src/routes/foodapi/foodapi.router");
+const auth = require("./src/middleware/auth/auth");
+
 require("dotenv").config();
 
 const app = express();
@@ -21,7 +23,14 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
 
+app.use(express.static(path.join(__dirname, "..", "server", "public")));
+app.use(auth);
 app.use("/getfood", foodRouter);
+
+app.get("/*", (req, res) => {
+  res.sendFile(path.join(__dirname, "..", "server", "public", "index.html"));
+});
+
 app.use(
   session({
     secret: "My dog name was jack",
@@ -29,8 +38,6 @@ app.use(
     saveUninitialized: false,
   })
 );
-
-//mongoose schema-----------------------------------------------
 
 //------------------------------------------------------------
 
@@ -108,90 +115,64 @@ app.post("/api/otp", (req, res) => {
   }
 });
 
-app.get("/api/verifytoken", (req, res) => {
-  const token = req.header("x-access-token");
-  const decode = jwt.verify(token, process.env.SECRET);
-  const email = decode.email;
-  models.user
-    .findOne({email: email})
-    .then((foundUser) => {
-      res.json({user: token, msg: "ye verify wala hai"});
-    })
-    .catch((err) => {
-      res.json({user: false});
-    });
-});
+// app.get("/api/verifytoken", (req, res) => {
+//   const token = req.header("x-access-token");
+//   const decode = jwt.verify(token, process.env.SECRET);
+//   const email = decode.email;
+//   models.user
+//     .findOne({email: email})
+//     .then((foundUser) => {
+//       res.json({user: token, msg: "ye verify wala hai"});
+//     })
+//     .catch((err) => {
+//       res.json({user: false});
+//     });
+// });
 
-app.use((req, res, next) => {
-  console.log(req.originalUrl, "url hai jaha me hu");
-  next();
-});
+// app.route("/login").post(validToken, (req, res) => {
+//   const {email, password} = req.body;
 
-app.use("/refresh-token", (req, res, next) => {
-  const refreshtoken = req.cookies.refresh_token;
-  if (refreshtoken) {
-    const accessToken = jwt.sign({user: true}, process.env.SECRET, {
-      expiresIn: "15m",
-    });
-    res.json({
-      access_token: accessToken,
-    });
-  } else {
-    res.json({
-      access_token: null,
-    });
-  }
-  next();
-});
+//   models.user
+//     .findOne({email: email})
+//     .then((founduser) => {
+//       bcrypt.compare(password, founduser.password, (err, result) => {
+//         if (result) {
+//           const payload = {
+//             Access_Token_Payload: {
+//               ID: founduser._id,
+//               email: founduser.email,
+//               username: founduser.username,
+//             },
+//             Ref_Token_Payload: {
+//               ID: founduser._id,
+//               email: founduser.email,
+//               username: founduser.username,
+//             },
+//           };
 
-const validToken = (req, res, next) => {
-  console.log("validlogin hua");
-  next();
-};
-
-app.route("/login").post(validToken, (req, res) => {
-  const {email, password} = req.body;
-
-  models.user
-    .findOne({email: email})
-    .then((founduser) => {
-      bcrypt.compare(password, founduser.password, (err, result) => {
-        if (result) {
-          const payload = {
-            Access_Token_Payload: {
-              ID: founduser._id,
-              email: founduser.email,
-              username: founduser.username,
-            },
-            Ref_Token_Payload: {
-              ID: founduser._id,
-              email: founduser.email,
-              username: founduser.username,
-            },
-          };
-
-          try {
-            const tokens = token.tokenGenrator(payload);
-            res.cookie("refresh_token", tokens.refreshToken);
-            res.json({
-              access_token: tokens.accessToken,
-            });
-          } catch (error) {
-            res.status(500).json({error: "Internal server error"});
-          }
-        } else {
-          res.json({status: "error", message: "wrong password"});
-        }
-      });
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-});
+//           try {
+//             const tokens = token.tokenGenrator(payload);
+//             res.cookie("refresh_token", tokens.refreshToken);
+//             res.json({
+//               access_token: tokens.accessToken,
+//             });
+//           } catch (error) {
+//             res.status(500).json({error: "Internal server error"});
+//           }
+//         } else {
+//           res.json({status: "error", message: "wrong password"});
+//         }
+//       });
+//     })
+//     .catch((err) => {
+//       console.log(err);
+//     });
+// });
 
 app.get("/api/logout", (req, res) => {
   res.clearCookie("refresh_token");
   res.json({access_token: null});
 });
+
 //-------------------------------------
 module.exports = app;

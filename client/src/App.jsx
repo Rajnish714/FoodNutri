@@ -1,6 +1,6 @@
 import React from "react";
 import Home from "./pages/Home";
-import Test from "./pages/Test";
+
 import Login from "./pages/Login";
 import SignUp from "./pages/Signup";
 import NotFoundPage from "./pages/NotFoundPage";
@@ -21,7 +21,6 @@ function App() {
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<Navigate to="/home" replace />} />
           <Route path="/home" element={<Home />} />
-          <Route path="/test" element={<Test />} />
         </Route>
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<SignUp />} />
