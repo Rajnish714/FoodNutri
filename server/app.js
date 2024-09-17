@@ -25,7 +25,7 @@ app.use(cookieParser());
 
 app.use(express.static(path.join(__dirname, "..", "server", "public")));
 app.use(auth);
-app.use("/getfood", foodRouter);
+app.use("/food", foodRouter);
 
 app.get("/*", (req, res) => {
   res.sendFile(path.join(__dirname, "..", "server", "public", "index.html"));
@@ -43,14 +43,6 @@ app.use(
 
 //  getting food info and add food into db
 
-app.post("/api/foodinfo", (req, res) => {
-  const selectedFood = req.body;
-  models.Food.create(selectedFood).then(() => {
-    console.log("aa gaya data");
-    console.log(req.body);
-  });
-  res.json({status: "ok"});
-});
 //--------------------------------------------------
 
 // ------------- user registeration ----------------------

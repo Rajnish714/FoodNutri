@@ -1,4 +1,5 @@
 const axios = require("axios");
+//const models = require("../../db");
 
 async function getFood(data) {
   const apiKey = "11b7e9340c4ed13136e9c3862efb3ad1%09";
@@ -14,4 +15,11 @@ async function getFood(data) {
   }
 }
 
-module.exports = getFood;
+async function saveFood(selectedFood) {
+  return {food: selectedFood, msg: "food add ho gaya"};
+
+  //toDo-  use updateOne method to create food model
+  // await models.Food.update(selectedFood).then(() => {});
+}
+
+module.exports = {saveFood, getFood};

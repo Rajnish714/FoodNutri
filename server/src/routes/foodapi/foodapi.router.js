@@ -1,7 +1,9 @@
 const express = require("express");
 const foodRouter = express.Router();
-const httpGetFood = require("./foodapi.controller");
+const {httpGetFood, httpSaveFood} = require("./foodapi.controller");
 
-foodRouter.get("/", httpGetFood);
+foodRouter.get("/getFood", httpGetFood);
+
+foodRouter.post("/addFood", httpSaveFood);
 
 module.exports = foodRouter;
